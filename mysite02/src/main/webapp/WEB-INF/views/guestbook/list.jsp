@@ -34,10 +34,10 @@
 					</table>
 				</form>
 				<ul>
-					<li>
 					<%
 						for(GuestbookVo vo : list) {
 					%>
+					<li>
 						<table>
 							<tr>
 								<td><%=count-- %></td>
@@ -52,10 +52,10 @@
 							</tr>
 						</table>
 						<br>
+					</li>
 					<%
 						}
 					%>
-					</li>
 				</ul>
 			</div>
 		</div>
