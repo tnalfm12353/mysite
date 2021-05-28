@@ -26,7 +26,7 @@ public class UpdateFormAction implements Action{
 		}
 		Long userId = authUser.getId();
 		UserVo userVo = new UserRepository().findById(userId);
-		request.setAttribute(null, userVo);
+		request.setAttribute("profile", userVo);
 		MvcUtils.forward("user/updateform", request, response);
 	}
 }

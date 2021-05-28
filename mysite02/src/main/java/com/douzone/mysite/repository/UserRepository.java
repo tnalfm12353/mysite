@@ -103,7 +103,7 @@ public class UserRepository {
 		try {
 			conn = getConnection();
 	
-			String sql = "select id, name, password, gender"
+			String sql = "select id, email, name, gender"
 					+ "		from user"
 					+ "		where id = ?";
 			pstmt = conn.prepareStatement(sql);
@@ -113,8 +113,8 @@ public class UserRepository {
 			while(rs.next()) {
 				result = new UserVo();
 				result.setId(rs.getLong(1));
-				result.setName(rs.getString(2));
-				result.setPassword(rs.getString(3));
+				result.setEmail(rs.getString(2));
+				result.setName(rs.getString(3));
 				result.setGender(rs.getString(4));
 			}
 				
