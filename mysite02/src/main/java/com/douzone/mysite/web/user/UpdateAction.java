@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.douzone.mysite.repository.UserRepository;
 import com.douzone.mysite.vo.UserVo;
 import com.douzone.web.Action;
 import com.douzone.web.util.MvcUtils;
@@ -14,14 +15,23 @@ public class UpdateAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		String email = request.getParameter("email");
-		String password = request.getParameter("password");
-		String gender = request.getParameter("gender");
+		String id = request.getParameter("id");
+		if("".equals(id)) { MvcUtils.redirect(request.getContextPath(), request, response); return ;}
 		
 		UserVo vo = new UserVo();
-		vo.setEmail(email);
-		vo.setPassword(password);
+		vo.setId(Long.valueOf(id));
+		vo.setName(request.getParameter("name"));
+		vo.setPassword(request.getParameter("password"));
+		vo.setGender(request.getParameter("gender"));
 		
+		if("".equals(vo.getName())) { MvcUtils.forward("user/updateform", request, response); return ;}
+		
+		UserRepository userRepo = new UserRepository();
+		
+		if(!"".equals(vo.getPassword())) {
+			userRepo.updatePassword(vo);
+		}
+		userRepo.update(vo);
 				
 		MvcUtils.redirect(request.getContextPath(), request, response);
 	}
