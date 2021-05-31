@@ -6,11 +6,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import com.douzone.mysite.repository.UserRepository;
 import com.douzone.mysite.vo.UserVo;
 import com.douzone.web.Action;
 import com.douzone.web.util.MvcUtils;
+import com.douzone.web.util.SessionUtils;
 
 public class UpdateFormAction implements Action{
 
@@ -18,11 +20,16 @@ public class UpdateFormAction implements Action{
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		
 		// 접근제어
-		HttpSession session = request.getSession();
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(session == null || authUser == null) {
+//		HttpSession session = request.getSession();
+//		UserVo authUser = (UserVo)session.getAttribute("authUser");
+//		if(session == null || authUser == null) {
+//			MvcUtils.redirect(request.getContextPath(), request, response);
+//			return;
+//		}
+		UserVo authUser = SessionUtils.getUserBySession(request, response);
+		if(authUser == null) {
 			MvcUtils.redirect(request.getContextPath(), request, response);
-			return;
+			return ;
 		}
 		Long userId = authUser.getId();
 		UserVo userVo = new UserRepository().findById(userId);
