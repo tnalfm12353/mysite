@@ -68,7 +68,7 @@ public class BoardReqository {
 		try {
 			conn = getConnection();
 	
-			String sql = "select b.id, b.title, b.content, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s'), b.hit, b.group_id, b.order_id, b.depth, b.user_id, u.name"
+			String sql = "select b.id, b.title, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s'), b.hit, b.group_id, b.order_id, b.depth, b.user_id, u.name"
 					+ "		from board b, user u"
 					+ "		where b.user_id = u.id"
 					+ "		order by group_id desc, order_id asc";
@@ -79,14 +79,13 @@ public class BoardReqository {
 				BoardVo vo = new BoardVo();
 				vo.setId(rs.getLong(1));
 				vo.setTitle(rs.getString(2));
-				vo.setContent(rs.getString(3));
-				vo.setRegDate(rs.getString(4));
-				vo.setHit(rs.getInt(5));
-				vo.setGroupId(rs.getInt(6));
-				vo.setOrderId(rs.getInt(7));
-				vo.setDepth(rs.getInt(8));
-				vo.setUserId(rs.getLong(9));
-				vo.setUserName(rs.getString(10));
+				vo.setRegDate(rs.getString(3));
+				vo.setHit(rs.getInt(4));
+				vo.setGroupId(rs.getInt(5));
+				vo.setOrderId(rs.getInt(6));
+				vo.setDepth(rs.getInt(7));
+				vo.setUserId(rs.getLong(8));
+				vo.setUserName(rs.getString(9));
 				
 				result.add(vo);
 			}
@@ -114,7 +113,7 @@ public class BoardReqository {
 		try {
 			conn = getConnection();
 	
-			String sql = "select id, title, content, hit, user_id"
+			String sql = "select id, title, content, hit, user_id, group_id, order_id, depth"
 					+ "		from board"
 					+ "		where id = ?";
 			pstmt = conn.prepareStatement(sql);
@@ -128,6 +127,9 @@ public class BoardReqository {
 				vo.setContent(rs.getString(3));
 				vo.setHit(rs.getInt(4));
 				vo.setUserId(rs.getLong(5));
+				vo.setGroupId(rs.getInt(6));
+				vo.setOrderId(rs.getInt(7));
+				vo.setDepth(rs.getInt(8));
 			}
 				
 		} catch (SQLException e) {
@@ -236,6 +238,31 @@ public class BoardReqository {
 			pstmt.setInt(1, boardvo.getHit()+1);
 			pstmt.setLong(2, boardvo.getId());
 			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("error : " + e);
+		} finally {
+			try {
+				// 자원정리(clean-up)
+				if(pstmt != null) { pstmt.close();}
+				if(conn != null) { conn.close();}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+
+	public void updateOrder(BoardVo vo) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = getConnection();
+			
+			String sql = "update board set order_id = order_id+1 where group_id = ? and order_id >= ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, vo.getGroupId());
+			pstmt.setInt(2, vo.getOrderId());
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println("error : " + e);

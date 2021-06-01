@@ -24,6 +24,7 @@ public class ModifyAction implements Action {
 			vo.setTitle(request.getParameter("title"));
 			vo.setContent(request.getParameter("content"));
 			if("".equals(vo.getTitle()) || "".equals(vo.getContent())) {
+				//TODO forward로 데이터를 다시 주고싶다면..?
 				return ;
 			}
 			new BoardReqository().updateBoard(vo,userVo);

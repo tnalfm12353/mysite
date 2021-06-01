@@ -23,6 +23,7 @@ public class WriteAction implements Action {
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
 			if("".equals(title)|| "".equals(content)) {
+				//TODO forward로 데이터를 다시 주고싶다면..?
 //				MvcUtils.forward(content, request, response);
 				return ;
 			}

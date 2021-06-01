@@ -36,6 +36,9 @@
 				<div class="bottom">
 					<a href="${pageContext.request.contextPath }/board">글목록</a>
 					<a href="${pageContext.request.contextPath }/board?a=modifyform&id=${param.id }">글수정</a>
+					<c:if test="${not empty authUser }">
+						<a href="${pageContext.request.contextPath }/board?a=replyform&id=${param.id}">답글</a>
+					</c:if>
 				</div>
 			</div>
 		</div>
