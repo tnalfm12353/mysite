@@ -105,7 +105,56 @@ public class BoardReqository {
 		}
 		return result; 
 	}
+	public List<BoardVo> searchFindAll(String kwd,int currentPage) {
+		List<BoardVo> result = new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
 	
+			String sql = "select b.id, b.title, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s'), b.hit, b.group_id, b.order_id, b.depth, b.user_id, u.name"
+					+ "		from board b, user u"
+					+ "		where u.name like ?"
+					+ "		or b.title like ? "
+					+ "		and b.user_id = u.id"
+					+ "		order by group_id desc, order_id asc"
+					+ "		limit ?, ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, "%"+kwd+"%");
+			pstmt.setString(2, "%"+kwd+"%");
+			pstmt.setInt(3, 3 * (currentPage-1));
+			pstmt.setInt(4, 3);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				BoardVo vo = new BoardVo();
+				vo.setId(rs.getLong(1));
+				vo.setTitle(rs.getString(2));
+				vo.setRegDate(rs.getString(3));
+				vo.setHit(rs.getInt(4));
+				vo.setGroupId(rs.getInt(5));
+				vo.setOrderId(rs.getInt(6));
+				vo.setDepth(rs.getInt(7));
+				vo.setUserId(rs.getLong(8));
+				vo.setUserName(rs.getString(9));
+				
+				result.add(vo);
+			}
+		
+		} catch (SQLException e) {
+			System.out.println("error : " + e);
+		} finally {
+			try {
+				// 자원정리(clean-up)
+				if(pstmt != null) { pstmt.close();}
+				if(conn != null) { conn.close();}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result; 
+	}
 	public BoardVo findById(Long id) {
 		BoardVo vo = null;
 		
@@ -317,13 +366,15 @@ public class BoardReqository {
 		int result = 0;
 		try {
 			conn = getConnection();
-			String sql = "select ceil(count(*)/3) "
+			String sql = "select ceiling(count(*)/3) "
 					+ "		from board b, user u "
-					+ "		where b.user_id = u.id"
-					+ "		and title like '%?%' "
-					+ "		and u.name like '%?%'";
+					+ "		where u.name like ? "
+					+ "		or b.title like ? "
+					+ "		and b.user_id = u.id";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, kwd);
+			
+			pstmt.setString(1, "%"+kwd+"%");
+			pstmt.setString(2, "%"+kwd+"%");
 			rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
