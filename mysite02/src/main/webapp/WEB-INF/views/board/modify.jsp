@@ -35,6 +35,9 @@
 						</tr>
 					</table>
 					<div class="bottom">
+						<c:if test="${param.status !=null}">
+							<span style="font-size:large; font-weight:bold; color:#ff6060; text-align:center; margin-left:auto;">${param.status }</span>
+						</c:if>
 						<a href="${pageContext.request.contextPath }/board?a=view&id=${board.id}">취소</a>
 						<input type="submit" value="수정">
 					</div>

@@ -33,7 +33,10 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="/board">취소</a>
+						<c:if test="${param.status !=null}">
+							<span style="font-size:large; font-weight:bold; color:#ff6060; text-align:center; margin-left:auto;">${param.status }</span>
+						</c:if>
+						<a href="${pageContext.request.contextPath }/board">취소</a>
 						<input type="submit" value="등록">
 					</div>
 				</form>				

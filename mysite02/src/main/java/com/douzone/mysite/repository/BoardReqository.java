@@ -310,4 +310,37 @@ public class BoardReqository {
 		return result;
 	}
 
+	public int serachTotalPage(String kwd) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int result = 0;
+		try {
+			conn = getConnection();
+			String sql = "select ceil(count(*)/3) "
+					+ "		from board b, user u "
+					+ "		where b.user_id = u.id"
+					+ "		and title like '%?%' "
+					+ "		and u.name like '%?%'";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, kwd);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("error : " + e);
+		} finally {
+			try {
+				// 자원정리(clean-up)
+				if(pstmt != null) { pstmt.close();}
+				if(conn != null) { conn.close();}
+				if(rs != null) {rs.close();}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 }

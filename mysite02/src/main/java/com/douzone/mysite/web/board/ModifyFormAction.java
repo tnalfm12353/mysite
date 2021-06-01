@@ -17,17 +17,15 @@ public class ModifyFormAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-		UserVo userVo = SessionUtils.getUserBySession(request, response); 
-		if(userVo == null) {
+		UserVo userVo = SessionUtils.getUserBySession(request, response);
+		Long id = Long.valueOf(request.getParameter("id"));
+		BoardVo vo = new BoardReqository().findById(id);
+		if(userVo == null || userVo.getId() != vo.getUserId()) {
 			MvcUtils.redirect(request.getContextPath()+"/board", request, response);
 			return ;
 		}
 		
-		Long id = Long.valueOf(request.getParameter("id"));
-		BoardVo vo = new BoardReqository().findById(id);
 		request.setAttribute("board", vo);
 		MvcUtils.forward("board/modify", request, response);
-
 	}
-
 }

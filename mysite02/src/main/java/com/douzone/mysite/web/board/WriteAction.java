@@ -23,8 +23,10 @@ public class WriteAction implements Action {
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
 			if("".equals(title)|| "".equals(content)) {
-				//TODO forward로 데이터를 다시 주고싶다면..?
-//				MvcUtils.forward(content, request, response);
+				String status = "Please Fill Out the Form above";
+				String id = request.getParameter("id");
+				MvcUtils.redirect(request.getContextPath()+"/board?a=writeform&id="+userVo.getId()+"&status="+status, request, response);
+				
 				return ;
 			}
 			BoardReqository repo = new BoardReqository();

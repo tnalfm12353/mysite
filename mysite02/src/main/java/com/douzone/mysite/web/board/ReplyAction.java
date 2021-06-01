@@ -23,15 +23,13 @@ public class ReplyAction implements Action {
 			int boardGroupId = Integer.parseInt(request.getParameter("group"));
 			int boardOrderId = Integer.parseInt(request.getParameter("order"));
 			int boardDepth = Integer.parseInt(request.getParameter("depth"));
-			System.out.println("Reply Action");
-			System.out.println(boardGroupId);
-			System.out.println(boardOrderId);
-			System.out.println(boardDepth);
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
 			if("".equals(title) || "".equals(content)) {
-				//TODO forward로 데이터를 다시 주고싶다면..?
-				MvcUtils.redirect(request.getContextPath()+"/board", request, response);
+				String status = "Please Fill Out the Form below";
+				String id = request.getParameter("id");
+				request.setCharacterEncoding("utf-8");
+				MvcUtils.redirect(request.getContextPath()+"/board?a=replyform&id="+id+"&status="+status, request, response);
 				return ;
 			}
 			BoardReqository repo = new BoardReqository();

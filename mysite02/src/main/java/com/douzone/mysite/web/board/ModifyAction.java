@@ -24,7 +24,9 @@ public class ModifyAction implements Action {
 			vo.setTitle(request.getParameter("title"));
 			vo.setContent(request.getParameter("content"));
 			if("".equals(vo.getTitle()) || "".equals(vo.getContent())) {
-				//TODO forward로 데이터를 다시 주고싶다면..?
+				String status = "Please Fill Out the Form above";
+				String id = request.getParameter("id");
+				MvcUtils.redirect(request.getContextPath()+"/board?a=modifyform&id="+id+"&status="+status, request, response);
 				return ;
 			}
 			new BoardReqository().updateBoard(vo,userVo);

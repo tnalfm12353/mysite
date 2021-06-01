@@ -25,7 +25,9 @@ public class BoardActionFactory extends ActionFactory{
 			action = new ReplyFormAction();
 		} else if("reply".equals(actionName)) {
 			action = new ReplyAction();
-		} else {
+		} else if("search".equals(actionName)) {
+			action = new SearchAction();
+		}  else {
 			action = new ListAction();
 		}
 		
