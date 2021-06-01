@@ -1,7 +1,9 @@
 package com.douzone.mysite.web.board;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +21,8 @@ public class ListAction implements Action {
 		
 		BoardReqository repo = new BoardReqository();
 		int totalPage = repo.totalPage();
+//		int totalPage = 100;
+		Map<String, Integer> map = new HashMap<>();
 		
 		int currentPage= 1;
 		if(request.getParameter("page") != null) {
@@ -26,13 +30,16 @@ public class ListAction implements Action {
 		}
 		
 		int firstPageNo = currentPage > 3 ? firstPageNo = currentPage - 2 : 1;
-		int lastPageNo = currentPage+2 >= totalPage? totalPage : currentPage + 2;
-		request.setAttribute("firstPage", firstPageNo);
-		request.setAttribute("lastPage", lastPageNo);
-		request.setAttribute("currentPage", currentPage);
+		int lastPageNo = currentPage + 2 >= totalPage? totalPage : currentPage > 3 ? currentPage + 2 : 5;
+		map.put("firstPage", firstPageNo);
+		map.put("currentPage", currentPage);
+		map.put("lastPage", lastPageNo);
+		
+		request.setAttribute("pages", map);
 		int nextPageNo = currentPage+1;
 		int prevPageNo = currentPage-1;
 		List<BoardVo> list = repo.findAll(currentPage);
+//		List<BoardVo> list = null;
 		request.setAttribute("list", list);
 		MvcUtils.forward("board/list", request, response);
 	}

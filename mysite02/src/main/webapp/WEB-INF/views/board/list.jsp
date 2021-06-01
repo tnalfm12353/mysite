@@ -28,6 +28,7 @@
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>
+					<div> first : ${pages.firstPage } / last : ${pages.lastPage } / current : ${pages.currentPage } </div>
 					<c:set var="count" value="${fn:length(list) }"></c:set>				
 					<c:forEach items="${list }" var="vo" varStatus="status">
 					<tr>
@@ -54,13 +55,13 @@
 				<div class="pager">
 					<ul>
 						<li><a href="">◀</a></li>
-						<c:forEach begin="${firstPage }" end="${lastPage }" varStatus="status">
+						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" step="1" varStatus="status">
 							<c:choose>
-								<c:when test="${status.count == currentPage }">
-									<li class="selected"><a href="${pageContext.request.contextPath }/board?page=${status.count}">${status.count }</a></li>
+								<c:when test="${(status.count-1) + pages.firstPage == pages.currentPage }">
+									<li class="selected"><a href="${pageContext.request.contextPath }/board?page=${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${pageContext.request.contextPath }/board?page=${status.count}">${status.count }</a></li>
+									<li><a href="${pageContext.request.contextPath }/board?page=${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
