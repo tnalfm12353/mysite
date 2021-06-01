@@ -53,11 +53,16 @@
 				<div class="pager">
 					<ul>
 						<li><a href="">◀</a></li>
-						<li><a href="">1</a></li>
-						<li class="selected">2</li>
-						<li><a href="">3</a></li>
-						<li>4</li>
-						<li>5</li>
+						<c:forEach begin="${firstPage }" end="${lastPage }" varStatus="status">
+							<c:choose>
+								<c:when test="${status.count == currentPage }">
+									<li class="selected"><a href="${pageContext.request.contextPath }/board?page=${status.count}">${status.count }</a></li>
+								</c:when>
+								<c:otherwise>
+									<li><a href="${pageContext.request.contextPath }/board?page=${status.count}">${status.count }</a></li>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
 						<li><a href="">▶</a></li>
 					</ul>
 				</div>					

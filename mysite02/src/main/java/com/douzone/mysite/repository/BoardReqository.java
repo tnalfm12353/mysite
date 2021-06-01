@@ -59,7 +59,7 @@ public class BoardReqository {
 		return result;
 	}
 
-	public List<BoardVo> findAll() {
+	public List<BoardVo> findAll(int currentPage) {
 		List<BoardVo> result = new ArrayList<>();
 		
 		Connection conn = null;
@@ -71,9 +71,11 @@ public class BoardReqository {
 			String sql = "select b.id, b.title, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s'), b.hit, b.group_id, b.order_id, b.depth, b.user_id, u.name"
 					+ "		from board b, user u"
 					+ "		where b.user_id = u.id"
-					+ "		order by group_id desc, order_id asc";
+					+ "		order by group_id desc, order_id asc"
+					+ "		limit ?, ?";
 			pstmt = conn.prepareStatement(sql);
-			
+			pstmt.setInt(1, 3 * (currentPage-1));
+			pstmt.setInt(2, 3);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				BoardVo vo = new BoardVo();
@@ -276,6 +278,36 @@ public class BoardReqository {
 			}
 		}
 		
+	}
+
+	public int totalPage() {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int result = 0;
+		try {
+			conn = getConnection();
+			String sql = "select ceil(count(*)/3) from board";
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("error : " + e);
+		} finally {
+			try {
+				// 자원정리(clean-up)
+				if(pstmt != null) { pstmt.close();}
+				if(conn != null) { conn.close();}
+				if(rs != null) {rs.close();}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 
 }
