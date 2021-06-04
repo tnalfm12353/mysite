@@ -43,7 +43,7 @@
 						<td>${vo.regDate }</td>
 						<td>
 							<c:if test="${vo.userId == authUser.id }">
-								<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id}" class="del">삭제</a>
+								<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id}" class="del" style='backgound-image:url("${pageContext.request.contextPath}/assets/images/recycle.png")'>삭제</a>
 							</c:if>
 						</td>
 					</tr>

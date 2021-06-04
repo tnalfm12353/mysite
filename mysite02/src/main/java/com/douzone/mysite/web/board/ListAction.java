@@ -21,7 +21,7 @@ public class ListAction implements Action {
 		
 		BoardReqository repo = new BoardReqository();
 		int totalPage = repo.totalPage();
-//		int totalPage = 100;
+//		int totalPage = 7;
 		Map<String, Integer> map = new HashMap<>();
 		
 		int currentPage= 1;
@@ -29,8 +29,9 @@ public class ListAction implements Action {
 			currentPage = Integer.parseInt(request.getParameter("page"));
 		}
 		
-		int firstPageNo = currentPage > 3 ? firstPageNo = currentPage - 2 : 1;
-		int lastPageNo = currentPage + 2 >= totalPage? totalPage : currentPage > 3 ? currentPage + 2 : 5;
+		int firstPageNo = currentPage > 3 ? totalPage - currentPage <= 2 ? totalPage - 4 : currentPage - 2 : 1;
+		int lastPageNo = currentPage + 2 >= totalPage ? totalPage : currentPage > 3 ? currentPage + 2 : 5;
+		
 		map.put("firstPage", firstPageNo);
 		map.put("currentPage", currentPage);
 		map.put("lastPage", lastPageNo);
