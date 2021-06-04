@@ -5,7 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.douzone.mysite.vo.UserVo;
@@ -13,87 +17,21 @@ import com.douzone.mysite.vo.UserVo;
 @Repository
 public class UserRepository {
 	
-	private Connection getConnection() throws SQLException{
-		Connection conn = null;
-		
-		try {
-			Class.forName("org.mariadb.jdbc.Driver");
-			String url = "jdbc:mysql://192.168.80.105:3307/webdb?characterEncoding=utf8";
-			conn = DriverManager.getConnection(url,"webdb","webdb");
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩 실패 : " + e);
-		}
-		
-		return conn;
-	}
+	@Autowired
+	private SqlSession sqlSession;
+	
 	
 	public Boolean insert(UserVo vo) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		Boolean result = false;
-		try {
-			conn = getConnection();
-			
-			String sql = "insert into user values(null,?,?,?,?)";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, vo.getName());
-			pstmt.setString(2, vo.getEmail());
-			pstmt.setString(3, vo.getPassword());
-			pstmt.setString(4, vo.getGender());
-			int count = pstmt.executeUpdate();
-			result = count == 1;
-		} catch (SQLException e) {
-			System.out.println("error : " + e);
-		} finally {
-			try {
-				// 자원정리(clean-up)
-				if(pstmt != null) { pstmt.close();}
-				if(conn != null) { conn.close();}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
+		int result = sqlSession.insert("user.insert", vo);
+		return result == 1;
 	}
 
 	public UserVo findByEmailAndPassword(String email, String password) {
-		UserVo result = null;
+		Map<String, String> map = new HashMap<>();
+		map.put("e", email);
+		map.put("p", password);
 		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		try {
-			conn = getConnection();
-			
-			String sql = "select id, name from user where email = ? and password = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, email);
-			pstmt.setString(2, password);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				Long id = rs.getLong(1);
-				String name = rs.getString(2);
-				
-				result = new UserVo();
-				result.setId(id);
-				result.setName(name);
-			}
-			
-		} catch (SQLException e) {
-			System.out.println("error : " + e);
-		} finally {
-			try {
-				// 자원정리(clean-up)
-				if(pstmt != null) { pstmt.close();}
-				if(conn != null) { conn.close();}
-				if(rs != null)	{ rs.close();}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
+		return sqlSession.selectOne("user.findByEmailAndPassword", map);
 	}
 	
 	public UserVo findById(Long id) {

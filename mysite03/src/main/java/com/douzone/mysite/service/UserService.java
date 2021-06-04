@@ -15,4 +15,8 @@ public class UserService {
 	public Boolean joinUser(UserVo vo) {
 		return userRepository.insert(vo);
 	}
+	
+	public UserVo getUser(String email, String password) {
+		return userRepository.findByEmailAndPassword(email, password);
+	}
 }

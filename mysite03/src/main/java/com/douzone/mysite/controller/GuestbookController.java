@@ -39,8 +39,9 @@ public class GuestbookController {
 	}
 	
 	@PostMapping("/delete/{id}")
-	public String delete(@PathVariable(name = "id")Long id, String password) {
-		guestBookService.deleteMessage(id, password);
+	public String delete(@PathVariable(name = "id")Long id, GuestbookVo vo) {
+		vo.setId(id);
+		guestBookService.deleteMessage(vo);
 		return "redirect:/guestbook";
 	}
 }

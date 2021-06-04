@@ -18,8 +18,8 @@ public class GuestBookService {
 		return guestbookRepository.findAll();
 	}
 	
-	public void deleteMessage(Long id, String password) {
-		guestbookRepository.delete(id,password);
+	public void deleteMessage(GuestbookVo vo) {
+		guestbookRepository.delete(vo);
 	}
 	
 	public void addMessage(GuestbookVo vo) {
