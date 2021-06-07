@@ -8,6 +8,8 @@ public class UserVo {
 	private String email;
 	private String password;
 	private String gender;
+	private String role;
+	
 	public Long getId() {
 		return id;
 	}
@@ -38,9 +40,15 @@ public class UserVo {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	@Override
 	public String toString() {
 		return "UserVo [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", gender="
-				+ gender + "]";
+				+ gender + ", role=" + role + "]";
 	}
 }

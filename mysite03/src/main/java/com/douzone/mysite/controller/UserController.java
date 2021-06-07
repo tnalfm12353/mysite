@@ -8,9 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.douzone.mysite.security.Auth;
+import com.douzone.mysite.security.AuthUser;
 import com.douzone.mysite.service.UserService;
 import com.douzone.mysite.vo.UserVo;
 
@@ -41,29 +41,21 @@ public class UserController {
 	
 	@Auth
 	@RequestMapping("/update")
-	public String update(HttpSession session, Model model) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
+	public String update(@AuthUser UserVo authUser, Model model) {
 		Long id = authUser.getId();
-		userService.getUser(id);
+		UserVo user = userService.getUser(id);
 
+		model.addAttribute("profile",user);
 		return "user/update";
 	}
-	
+	@Auth
 	@PostMapping("/update")
-	public String update(HttpSession session, UserVo userVo) {
-		UserVo authUser = (UserVo)session.getAttribute("authUser");
-		if(authUser == null) {
-			return "redirect:/";
-		}
-		
+	public String update(@AuthUser UserVo authUser, UserVo userVo) {
 		userVo.setId(authUser.getId());
 		userService.updateUser(userVo);
 		authUser.setName(userVo.getName());
 		
-		return "redirect:/user/update";
+		return "redirect:/";
 	}
 	
 	@RequestMapping("/logout")

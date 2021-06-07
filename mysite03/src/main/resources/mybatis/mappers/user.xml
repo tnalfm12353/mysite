@@ -9,13 +9,13 @@
 		<![CDATA[
 			insert 
 				into user 
-				values(null,#{name},#{email},#{password},#{gender})
+				values(null,#{name},#{email},#{password},#{gender},'USER')
 		]]>
 	</insert>
 	
 	<select id="findByEmailAndPassword" parameterType="map" resultType="uservo">
 		<![CDATA[
-			select id, name 
+			select id, name, role
 				from user 
 				where email = #{e} 
 				and password = #{p}
@@ -37,7 +37,7 @@
 				update user
 			       set name=#{name },
 			           gender=#{gender }
-			     where no=${no }
+			     where id=${id }
 				]]>
 			</when>
 			<otherwise>
@@ -46,7 +46,7 @@
 				   set name=#{name },
 				       password=#{password }, 
 				       gender=#{gender }
-				 where no=${no }	
+				 where id=${id }	
 				]]>
 			</otherwise>
 		</choose>
