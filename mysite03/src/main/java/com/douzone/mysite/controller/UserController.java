@@ -5,10 +5,12 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.douzone.mysite.security.Auth;
 import com.douzone.mysite.service.UserService;
 import com.douzone.mysite.vo.UserVo;
 
@@ -50,12 +52,26 @@ public class UserController {
 		}
 		// 로그인 처리 (세션)
 		session.setAttribute("authUser", authUser);
+		
 		return "redirect:/";
 	}
 	
+	@Auth
 	@RequestMapping("/update")
-	public String update(Model model) {
+	public String update(HttpSession session, Model model) {
+		UserVo authUser = (UserVo)session.getAttribute("authUser");
+		if(authUser == null) {
+			return "redirect:/";
+		}
+		Long id = authUser.getId();
+		userService.getUser(id);
+
 		return "user/update";
+	}
+	
+	@PostMapping("/update")
+	public String update() {
+		return null;
 	}
 	
 	@RequestMapping("/logout")
