@@ -21,4 +21,34 @@
 				and password = #{p}
 		]]>
 	</select>
+	
+	<select id="findById" parameterType="Long" resultType="uservo">
+		<![CDATA[
+			select id, email, name, gender
+				from user
+				where id = #{id}
+		]]>
+	</select>
+	
+	<update id="update" parameterType="uservo">
+		<choose>
+			<when test='password == ""'>
+				<![CDATA[
+				update user
+			       set name=#{name },
+			           gender=#{gender }
+			     where no=${no }
+				]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+				update user
+				   set name=#{name },
+				       password=#{password }, 
+				       gender=#{gender }
+				 where no=${no }	
+				]]>
+			</otherwise>
+		</choose>
+	</update>
 </mapper>
