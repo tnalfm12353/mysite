@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	
+	<insert id="insert" parameterType="boardvo">
+		<![CDATA[
+			insert 
+				into board 
+				values(null,#{title},#{content},now(),0,#{groupId},#{orderId},#{depth},#{userId})
+		]]>
+	</insert>
+	
+	<select id="maxGroupId" resultType="int">
+		<![CDATA[
+			select max(group_id)
+				from board
+		]]>
+	</select>
+	
+	<select id="findAll" parameterType="map" resultType="boardvo">
+		<choose>
+			<when test='kwd == ""'>
+				<![CDATA[
+					select b.id, b.title, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as regDate, b.hit, b.group_id as groupId, b.order_id as orderId, b.depth, b.user_id as userId, u.name as userName
+						from board b, user u
+						where b.user_id = u.id
+						order by group_id desc, order_id asc
+						limit ${3 * (currentPage-1)}, 3
+				]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+					select b.id, b.title, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as regDate, b.hit, b.group_id as groupId, b.order_id as orderId, b.depth, b.user_id as userId, u.name as userName
+							from board b, user u
+							where u.name like '%${kwd}%'
+							or b.title like '%${kwd}%'
+							and b.user_id = u.id
+							order by group_id desc, order_id asc
+							limit ${3 * (currentPage-1)}, 3
+				]]>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findById" parameterType="long" resultType="boardvo">
+		<![CDATA[
+			select id, title, content, hit, user_id as userId, group_id as groupId, order_id as orderId, depth
+				from board
+				where id = ${_parameter}
+		]]>
+	</select>
+	
+	<select id="totalPage" parameterType="string" resultType="int">
+		<choose>
+			<when test='_parameter == null'>
+				<![CDATA[
+					select ceil(count(*)/3) from board
+				]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+					select ceiling(count(*)/3) 
+						from board b, user u 
+						where u.name like '%${_parameter}%' 
+						or b.title like '%${_parameter}%'
+						and b.user_id = u.id
+				]]>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<update id="updateBoard" parameterType="boardvo">
+		<![CDATA[
+			update board 
+				set title = #{title} , content = #{content} 
+				where id = #{id}
+				and user_id = #{userId}
+		]]>
+	</update>
+	
+	<update id="updateHit" parameterType="boardvo">
+		<![CDATA[
+			update board 
+			set hit = ${hit + 1} 
+			where id = #{id}
+		]]>
+	</update>
+	
+	<update id="updateOrder" parameterType="boardvo">
+		<![CDATA[
+			update board 
+				set order_id = order_id+1 
+				where group_id = #{groupId} 
+				and order_id >= #{orderId}
+		]]>
+	</update>
+	
+	<delete id="delete" parameterType="boardvo">
+		<![CDATA[
+			delete 
+				from board
+				where id = #{id}
+				and user_id = #{userId}
+		]]>
+	</delete>
+</mapper>

@@ -38,11 +38,9 @@
 			</c:if>
 			<br/>
 			<div id="board" style="border:1px solid black; box-shadow:0 5px 16px 5px rgb(0 0 0 / 20%); ">
-				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board?">
-					<input type = "hidden" name = "a" value="reply">
-					<input type = "hidden" name = "id" value="${board.id }"/>
-					<input type = "hidden" name = "group" value="${board.groupId }">
-					<input type = "hidden" name = "order" value="${board.orderId }">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/reply">
+					<input type = "hidden" name = "groupId" value="${board.groupId }">
+					<input type = "hidden" name = "orderId" value="${board.orderId }">
 					<input type = "hidden" name = "depth" value="${board.depth }">
 					<table class="tbl-ex">
 						<tr>
@@ -60,7 +58,7 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="${pageContext.request.contextPath }/board?a=view&id=${board.id}">취소</a>
+						<a href="${pageContext.request.contextPath }/board/view/${board.id}">취소</a>
 						<input type="submit" value="등록">
 					</div>
 				</form>				

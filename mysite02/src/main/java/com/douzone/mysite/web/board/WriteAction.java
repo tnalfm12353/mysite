@@ -24,7 +24,6 @@ public class WriteAction implements Action {
 			String content = request.getParameter("content");
 			if("".equals(title)|| "".equals(content)) {
 				String status = "Please Fill Out the Form above";
-				String id = request.getParameter("id");
 				MvcUtils.redirect(request.getContextPath()+"/board?a=writeform&id="+userVo.getId()+"&status="+status, request, response);
 				
 				return ;
