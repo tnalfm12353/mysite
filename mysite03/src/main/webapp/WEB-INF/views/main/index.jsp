@@ -20,7 +20,7 @@
 					<img id="profile" src="${pageContext.request.contextPath }/assets/images/profile.jpg">
 					<h2>${site.welcome }</h2>
 					<p>
-						${fn:replace(site.description,newline,"<br />")}
+						${fn:replace(site.description,newLine,"<br/>")}
 						<br/><br/>
 						<a href="${pageContext.request.contextPath }/guestbook">방명록</a>에 글 남기기<br>
 					</p>
