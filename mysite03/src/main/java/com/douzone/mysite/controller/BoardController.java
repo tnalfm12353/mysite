@@ -38,11 +38,15 @@ public class BoardController {
 		return "board/list";
 	}
 	
-	@PostMapping(value ={"/search","/search/{page}"})
-	public String searchedBoardList(@PathVariable(name = "page", required = false )Integer currentPage, String kwd, Model model) {
+	@RequestMapping(value ={"/search","/search/{page}"})
+	public String searchedBoardList(@PathVariable(name = "page", required = false )Integer currentPage, String kwd, Model model ) {
 		if(currentPage == null) {
 			currentPage = 1;
 		}
+		if("".equals(kwd)) {
+			return "redirect:/board";
+		}
+		
 		Map<String,Integer> pages = boardService.getSearchedPages(currentPage,kwd);
 		
 		List<BoardVo> list = boardService.getSearchedBoardList(currentPage,kwd);

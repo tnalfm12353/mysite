@@ -17,6 +17,7 @@
 			update site
 				set title = #{title},
 				 	welcome = #{welcome},
+				 	profileURL = #{profileURL},
 					description = #{description}
 				where id = 1
 		]]>

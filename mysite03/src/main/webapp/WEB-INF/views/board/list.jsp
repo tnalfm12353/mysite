@@ -14,7 +14,7 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="${pageContext.request.contextPath }/board/search" method="post">
+				<form id="search_form" action="${pageContext.request.contextPath }/board/search" method="get">
 					<input type="text" id="kwd" name="kwd" value="">
 					<input type="submit" value="찾기">
 				</form>
@@ -55,11 +55,19 @@
 						<!-- <li><a href="">◀</a></li> -->
 						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" step="1" varStatus="status">
 							<c:choose>
-								<c:when test="${(status.count-1) + pages.firstPage == pages.currentPage }">
-									<li class="selected"><a href="${pageContext.request.contextPath }/board/${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
+								<c:when test="${kwd != null }">
+									<c:set var="hrefvalue" value="${pageContext.request.contextPath }/board/search/${(status.count-1) + pages.firstPage }?kwd=${kwd }"/>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${pageContext.request.contextPath }/board/${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
+									<c:set var="hrefvalue" value="${pageContext.request.contextPath }/board/${(status.count-1) + pages.firstPage }"/>
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${(status.count-1) + pages.firstPage == pages.currentPage }">
+									<li class="selected"><a href="${hrefvalue }">${(status.count-1) + pages.firstPage }</a></li>
+								</c:when>
+								<c:otherwise>
+									<li><a href="${hrefvalue }">${(status.count-1) + pages.firstPage }</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>

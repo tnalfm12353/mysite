@@ -5,9 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.douzone.mysite.security.Auth;
 import com.douzone.mysite.service.AdminService;
+import com.douzone.mysite.service.FileuploadService;
 import com.douzone.mysite.vo.SiteVo;
 
 @Auth(role = "ADMIN")
@@ -20,6 +23,8 @@ public class AdminController {
 	
 	@Autowired
 	private AdminService adminService;
+	@Autowired
+	private FileuploadService fileuploadService;
 	
 	@RequestMapping("")
 	public String main(Model model) {
@@ -29,7 +34,9 @@ public class AdminController {
 	}
 	
 	@PostMapping("/main/update")
-	public String updateMain(SiteVo siteVo) {
+	public String updateMain(SiteVo siteVo, MultipartFile file) {
+		String url = fileuploadService.restore(file);
+		siteVo.setProfileURL(url);
 		adminService.updateSite(siteVo);
 		return "redirect:/admin";
 	}
