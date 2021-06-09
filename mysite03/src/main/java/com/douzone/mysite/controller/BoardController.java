@@ -43,9 +43,6 @@ public class BoardController {
 		if(currentPage == null) {
 			currentPage = 1;
 		}
-		if("".equals(kwd)) {
-			return "redirect:/board";
-		}
 		
 		Map<String,Integer> pages = boardService.getSearchedPages(currentPage,kwd);
 		

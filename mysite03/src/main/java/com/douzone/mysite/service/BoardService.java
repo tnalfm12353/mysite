@@ -44,7 +44,6 @@ public class BoardService {
 	}
 	
 	public void updateBoard(UserVo authUser, BoardVo boardVo) {
-		System.out.println(boardVo);
 		if(checkingAuthor(authUser, boardVo)) {
 			boardRepository.updateBoard(boardVo);
 		}

@@ -55,7 +55,7 @@
 	
 	<select id="totalPage" parameterType="string" resultType="int">
 		<choose>
-			<when test='_parameter == null'>
+			<when test='_parameter == null || _parameter == ""'>
 				<![CDATA[
 					select ceil(count(*)/3) from board
 				]]>

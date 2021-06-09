@@ -13,14 +13,27 @@
 	</select>
 	
 	<update id="updateSite" parameterType="sitevo">
-		<![CDATA[
-			update site
-				set title = #{title},
-				 	welcome = #{welcome},
-				 	profileURL = #{profileURL},
-					description = #{description}
-				where id = 1
-		]]>
+		<choose>
+			<when test="profileURL != null">
+				<![CDATA[
+					update site
+						set title = #{title},
+					 	welcome = #{welcome},
+					 	profileURL = #{profileURL},
+						description = #{description}
+					where id = 1
+				]]>
+			</when>	
+			<otherwise>
+				<![CDATA[
+					update site
+						set title = #{title},
+					 	welcome = #{welcome},
+						description = #{description}
+					where id = 1
+				]]>
+			</otherwise>
+		</choose>
 	</update>
 	
 <!--	
