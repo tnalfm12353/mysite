@@ -13,6 +13,16 @@
 	<div id="container">
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
+			<c:choose>
+				<c:when test="${kwd != null }">
+					<c:set var="path" value="${pageContext.request.contextPath }/board/search"/>
+					<c:set var="keyword" value="?kwd=${kwd }" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="path" value="${pageContext.request.contextPath }/board/"/>
+					<c:set var="keyword" value="" />
+				</c:otherwise>
+			</c:choose>
 			<div id="board">
 				<form id="search_form" action="${pageContext.request.contextPath }/board/search" method="get">
 					<input type="text" id="kwd" name="kwd" value="">
@@ -55,19 +65,11 @@
 						<!-- <li><a href="">◀</a></li> -->
 						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" step="1" varStatus="status">
 							<c:choose>
-								<c:when test="${kwd != null }">
-									<c:set var="hrefvalue" value="${pageContext.request.contextPath }/board/search/${(status.count-1) + pages.firstPage }?kwd=${kwd }"/>
-								</c:when>
-								<c:otherwise>
-									<c:set var="hrefvalue" value="${pageContext.request.contextPath }/board/${(status.count-1) + pages.firstPage }"/>
-								</c:otherwise>
-							</c:choose>
-							<c:choose>
 								<c:when test="${(status.count-1) + pages.firstPage == pages.currentPage }">
-									<li class="selected"><a href="${hrefvalue }">${(status.count-1) + pages.firstPage }</a></li>
+									<li class="selected"><a href="${path }/${(status.count-1) + pages.firstPage }${keyword}">${(status.count-1) + pages.firstPage }</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${hrefvalue }">${(status.count-1) + pages.firstPage }</a></li>
+									<li><a href="${path }/${(status.count-1) + pages.firstPage }${keyword}">${(status.count-1) + pages.firstPage }</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>

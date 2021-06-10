@@ -32,6 +32,10 @@ public class UserRepository {
 	public UserVo findById(Long id) {
 		return sqlSession.selectOne("user.findById",id);
 	}
+	
+	public UserVo findByEmail(String email) {
+		return sqlSession.selectOne("user.findByEmail",email);
+	}
 
 	public void update(UserVo vo) {
 		sqlSession.update("user.update",vo);
