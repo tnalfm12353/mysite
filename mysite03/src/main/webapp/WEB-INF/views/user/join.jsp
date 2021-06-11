@@ -73,23 +73,19 @@ $(()=>{
 					</spring:hasBindErrors>
 					
 					<label class="block-label" for="email">이메일</label>
-					<input id="email" name="email" type="text" value="">
+					<form:input path="email"/> 
 					<input id="btn-check" type="button" value="중복체크">
 					<spring:hasBindErrors name="userVo">
-					<p style="color:#f00; text-align:left">
-						<c:if test="${errors.hasFieldErrors('email') }">
-							<strong>${errors.getFieldError('email').defaultMessage}</strong>
-						</c:if>
+					<p style="color:#f00; text-align:left;">
+						<form:errors path="email" />
 					</p>
 					</spring:hasBindErrors>
 					<img id="img-check" src="${pageContext.request.contextPath }/assets/images/check.png" style="display:none; vertical-align: bottom;">
 					<label class="block-label"><spring:message code="user.join.label.password"></spring:message> </label>
-					<input name="password" type="password" value="">
+					<form:input path="password"/>
 					<spring:hasBindErrors name="userVo">
 					<p style="color:#f00; text-align:left">
-						<c:if test="${errors.hasFieldErrors('password') }">
-							<strong>${errors.getFieldError('password').defaultMessage}</strong>
-						</c:if>
+						<form:errors path="password" />
 					</p>
 					</spring:hasBindErrors>
 					<fieldset>
