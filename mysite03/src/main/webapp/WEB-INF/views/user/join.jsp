@@ -1,6 +1,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -14,7 +16,6 @@
 $(()=>{
 	
 	btn = $('#btn-check');
-	console.log(btn);
 	btn.click(()=>{
 		var email = $("#email").val();
 		if(email == ""){
@@ -53,17 +54,44 @@ $(()=>{
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="user">
-				<form id="join-form" name="joinForm" method="post" action="${pageContext.request.contextPath }/user/join">
+				<form:form
+					modelAttribute="userVo"
+				 	id="join-form" 
+				 	name="joinForm" 
+				 	method="post" 
+				 	action="${pageContext.request.contextPath }/user/join">
 					<label class="block-label" for="name">이름</label>
-					<input id="name" name="name" type="text" value="">
-
+					<form:input path="name" />
+					
+					<!-- 스프링 태그 -->
+					<spring:hasBindErrors name="userVo">
+						<p style="color:#f00; text-align:left">
+							<c:if test="${errors.hasFieldErrors('name') }">
+								<spring:message code="${errors.getFieldError('name').codes[0]}" />
+							</c:if>
+						</p>
+					</spring:hasBindErrors>
+					
 					<label class="block-label" for="email">이메일</label>
 					<input id="email" name="email" type="text" value="">
-					<input id="btn-check" type="button" value="id 중복체크">
+					<input id="btn-check" type="button" value="중복체크">
+					<spring:hasBindErrors name="userVo">
+					<p style="color:#f00; text-align:left">
+						<c:if test="${errors.hasFieldErrors('email') }">
+							<strong>${errors.getFieldError('email').defaultMessage}</strong>
+						</c:if>
+					</p>
+					</spring:hasBindErrors>
 					<img id="img-check" src="${pageContext.request.contextPath }/assets/images/check.png" style="display:none; vertical-align: bottom;">
-					<label class="block-label">패스워드</label>
+					<label class="block-label"><spring:message code="user.join.label.password"></spring:message> </label>
 					<input name="password" type="password" value="">
-					
+					<spring:hasBindErrors name="userVo">
+					<p style="color:#f00; text-align:left">
+						<c:if test="${errors.hasFieldErrors('password') }">
+							<strong>${errors.getFieldError('password').defaultMessage}</strong>
+						</c:if>
+					</p>
+					</spring:hasBindErrors>
 					<fieldset>
 						<legend>성별</legend>
 						<label>여</label> <input type="radio" name="gender" value="female" checked="checked">
@@ -78,7 +106,7 @@ $(()=>{
 					
 					<input type="submit" value="가입하기">
 					
-				</form>
+				</form:form>
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navi.jsp" />

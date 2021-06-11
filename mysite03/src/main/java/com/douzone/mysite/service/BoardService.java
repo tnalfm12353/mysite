@@ -73,11 +73,13 @@ public class BoardService {
 	
 	private Map<String, Integer> calculatePages(int currentPage, int totalPage){
 		Map<String, Integer> pages = new HashMap<>();
-		
-		int firstPage = 1;
-		int lastPage = 1;
-		firstPage = currentPage > 3 ? totalPage - currentPage <= 2 ? totalPage >= 5? totalPage - 4: 1 : currentPage - 2 : 1;
-		lastPage = totalPage >=5? currentPage + 2 >= totalPage ? totalPage : currentPage > 3 ? currentPage + 2 : 5: totalPage;
+
+		totalPage = 13;
+		int blockPage = totalPage > 5 ? totalPage-4 : 1;
+		int firstPage = blockPage > 1 ? currentPage -2 : 1 ;
+		int lastPage =  currentPage >= blockPage ? totalPage : currentPage + 2;
+//		firstPage = currentPage > 3 ? totalPage - currentPage <= 2 ? totalPage >= 5? totalPage - 4: 1 : currentPage - 2 : 1;
+//		lastPage = totalPage >=5? currentPage + 2 >= totalPage ? totalPage : currentPage > 3 ? currentPage + 2 : 5: totalPage;
 		//TODO: 다시 생각해서 이쁘게 만들길..
 //		if(currentPage > 3) {
 //			firstPage = currentPage - 2;
