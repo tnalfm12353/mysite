@@ -17,24 +17,18 @@ public class BoardService {
 	@Autowired
 	private BoardRepository boardRepository;
 	
-	public Map<String, Integer> getPages(int currentPage) {
-		int totalPage = boardRepository.totalPage();
-		return calculatePages(currentPage, totalPage);
-	}
-  
-	public Map<String, Integer> getSearchedPages(int currentPage,String kwd) {
-		int totalPage = boardRepository.searchedTotalPage(kwd);
+	public Map<String, Integer> getPages(int currentPage, String kwd) {
+		int totalPage = boardRepository.totalPage(kwd);
 		return calculatePages(currentPage, totalPage);
 	}
 	
-	public List<BoardVo> getBoardList(int currentPage) {
-		return boardRepository.findAll(currentPage);
+	public List<BoardVo> getBoardList(Integer currentPage, String kwd) {
+		if(currentPage == null){
+			currentPage = 1;
+		}
+		return boardRepository.findAll(currentPage,kwd);
 	}
 	
-	public List<BoardVo> getSearchedBoardList(int currentPage,String kwd) {
-		return boardRepository.searchedfindAll(currentPage, kwd);
-	}
-
 	public void writeBoard(BoardVo boardVo) {
 		boardRepository.insert(boardVo);
 	}
@@ -45,14 +39,13 @@ public class BoardService {
 	
 	public void updateBoard(UserVo authUser, BoardVo boardVo) {
 		if(checkingAuthor(authUser, boardVo)) {
+			boardVo.setUserId(authUser.getId());
 			boardRepository.updateBoard(boardVo);
 		}
 	}
 	
-	public void deleteBoard(UserVo authUser, BoardVo boardVo) {
-		if(checkingAuthor(authUser,boardVo)) {
-			boardRepository.delete(boardVo);
-		}
+	public void deleteBoard(Long userId, Long boardId) {
+			boardRepository.delete(userId,boardId);
 	}
 
 	public void updateHit(BoardVo boardVo) {

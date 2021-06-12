@@ -1,9 +1,13 @@
 package com.douzone.mysite.vo;
 
+import javax.validation.constraints.NotEmpty;
+
 public class GalleryVo {
 	
 	private Long id;
+	@NotEmpty
 	private String comment;
+	@NotEmpty
 	private String url;
 	
 	public Long getId() {

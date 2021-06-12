@@ -21,15 +21,7 @@ public class BoardRepository {
 		return result == 1;
 	}
 
-	public List<BoardVo> findAll(int currentPage) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("currentPage",currentPage);
-		map.put("kwd", "");
-		
-		return sqlSession.selectList("board.findAll", map);
-	}
-	
-	public List<BoardVo> searchedfindAll(int currentPage, String kwd) {
+	public List<BoardVo> findAll(int currentPage, String kwd) {
 		Map<String, Object> map = new HashMap<>();
 		map.put("currentPage",currentPage);
 		map.put("kwd", kwd);
@@ -47,11 +39,13 @@ public class BoardRepository {
 			result = 1;
 		}
 		return result;
-				 
 	}
 	
-	public void delete (BoardVo boardVo) {
-		sqlSession.delete("board.delete",boardVo);
+	public void delete (Long userId, Long boardId) {
+		Map<String,Long> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("boardId", boardId);
+		sqlSession.delete("board.delete",map);
 	}
 
 	public void updateBoard(BoardVo boardvo) {
@@ -67,12 +61,7 @@ public class BoardRepository {
 		
 	}
 
-	public int totalPage() {
-		return sqlSession.selectOne("board.totalPage");
-	}
-
-	public int searchedTotalPage(String kwd) {
-		System.out.println(kwd);
+	public int totalPage(String kwd) {
 		return sqlSession.selectOne("board.totalPage", kwd);
 	}
 }

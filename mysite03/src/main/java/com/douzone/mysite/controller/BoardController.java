@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.douzone.mysite.exception.EmptyAuthUserException;
 import com.douzone.mysite.security.Auth;
@@ -24,35 +25,16 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 	
-	@RequestMapping(value = {"","/{page}"})
-	public String boardList(@PathVariable(name = "page", required = false )Integer currentPage, Model model) {
-		if(currentPage == null) {
-			currentPage = 1;
-		}
-		Map<String,Integer> pages = boardService.getPages(currentPage);
-		
-		List<BoardVo> list = boardService.getBoardList(currentPage);
-
+	@RequestMapping("")
+	public String boardList(@RequestParam(name = "page", required = false )Integer currentPage, 
+							@RequestParam(required = false)String kwd ,Model model) {
+		Map<String,Integer> pages = boardService.getPages(currentPage, kwd);
+		List<BoardVo> list = boardService.getBoardList(currentPage, kwd);
 		model.addAttribute("list", list);
 		model.addAttribute("pages",pages);
 		return "board/list";
 	}
 	
-	@RequestMapping(value ={"/search","/search/{page}"})
-	public String searchedBoardList(@PathVariable(name = "page", required = false )Integer currentPage, String kwd, Model model ) {
-		if(currentPage == null) {
-			currentPage = 1;
-		}
-		
-		Map<String,Integer> pages = boardService.getSearchedPages(currentPage,kwd);
-		
-		List<BoardVo> list = boardService.getSearchedBoardList(currentPage,kwd);
-		model.addAttribute("kwd", kwd);
-		model.addAttribute("list", list);
-		model.addAttribute("pages",pages);
-		return "board/list";
-	}
-
 	@RequestMapping("/view/{id}")
 	public String view(@AuthUser UserVo authUser,@PathVariable Long id, Model model) {
 		checkingEmptyAuthUser(authUser);
@@ -116,7 +98,6 @@ public class BoardController {
 	@PostMapping("/modify/{id}")
 	public String modify(@AuthUser UserVo authUser,@PathVariable Long id, BoardVo boardVo) {
 		checkingEmptyAuthUser(authUser);
-		boardVo.setId(id);
 		boardService.updateBoard(authUser, boardVo);
 		return "redirect:/board";
 	}
@@ -125,11 +106,7 @@ public class BoardController {
 	@RequestMapping("/delete/{id}")
 	public String delete(@AuthUser UserVo authUser, @PathVariable Long id) {
 		checkingEmptyAuthUser(authUser);
-		
-		BoardVo boardVo = boardService.getBoard(id);
-		boardService.deleteBoard(authUser,boardVo);
-		
-		checkingEmptyAuthUser(authUser);
+		boardService.deleteBoard(authUser.getId(),id);
 		return "redirect:/board";
 	}
 	
