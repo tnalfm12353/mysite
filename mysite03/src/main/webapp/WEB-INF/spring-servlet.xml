@@ -96,9 +96,7 @@
 			</list>
 		</property>
 	</bean>
-
-	<!-- title <bean id="title" class="com.douzone.mysite.repository.AdminRepository"> 
-		<property name="title" value="findById"></property> </bean> -->
+	
 	<context:annotation-config />
 	<context:component-scan
 		base-package="com.douzone.mysite.controller, com.douzone.mysite.exception" />

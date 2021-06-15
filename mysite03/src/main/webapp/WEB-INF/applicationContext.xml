@@ -34,7 +34,13 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
-
+	
+<!-- 
+	<bean id="siteTitle" class="com.douzone.mysite.vo.SiteVo">
+		<property name="title" ></property>
+	</bean>
+-->
+	
 <context:annotation-config />
 <context:component-scan base-package="com.douzone.mysite.repository, com.douzone.mysite.service, com.douzone.mysite.aspect">
 	<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />

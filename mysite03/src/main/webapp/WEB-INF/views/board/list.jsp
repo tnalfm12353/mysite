@@ -13,18 +13,9 @@
 	<div id="container">
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
-			<c:choose>
-				<c:when test="${kwd != null }">
-					<c:set var="path" value="${pageContext.request.contextPath }/board/search"/>
-					<c:set var="keyword" value="?kwd=${kwd }" />
-				</c:when>
-				<c:otherwise>
-					<c:set var="path" value="${pageContext.request.contextPath }/board/"/>
-					<c:set var="keyword" value="" />
-				</c:otherwise>
-			</c:choose>
 			<div id="board">
-				<form id="search_form" action="${pageContext.request.contextPath }/board/search" method="get">
+				<form id="search_form" action="${pageContext.request.contextPath }/board?" method="get">
+					<input type="hidden" name="a" value="search" />
 					<input type="text" id="kwd" name="kwd" value="">
 					<input type="submit" value="찾기">
 				</form>
@@ -45,14 +36,14 @@
 							<c:if test="${vo.depth != 0 }"> 
 								<img src='${pageContext.servletContext.contextPath }/assets/images/reply.png'/>
 							</c:if>
-							<a href="${pageContext.request.contextPath }/board/view/${vo.id}">${vo.title }</a>
+							<a href="${pageContext.request.contextPath }/board?a=view&id=${vo.id}">${vo.title }</a>
 						</td>
 						<td>${vo.userName }</td>
 						<td>${vo.hit }</td>
 						<td>${vo.regDate }</td>
 						<td>
 							<c:if test="${vo.userId == authUser.id }">
-								<a href="${pageContext.request.contextPath }/board/delete/${vo.id}" class="del" style='backgound-image:url("${pageContext.request.contextPath}/assets/images/recycle.png")'>삭제</a>
+								<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id}" class="del">삭제</a>
 							</c:if>
 						</td>
 					</tr>
@@ -62,24 +53,24 @@
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
-						<!-- <li><a href="">◀</a></li> -->
+						<li><a href="">◀</a></li>
 						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" step="1" varStatus="status">
 							<c:choose>
 								<c:when test="${(status.count-1) + pages.firstPage == pages.currentPage }">
-									<li class="selected"><a href="${path }/${(status.count-1) + pages.firstPage }${keyword}">${(status.count-1) + pages.firstPage }</a></li>
+									<li class="selected"><a href="${pageContext.request.contextPath }/board?page=${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${path }/${(status.count-1) + pages.firstPage }${keyword}">${(status.count-1) + pages.firstPage }</a></li>
+									<li><a href="${pageContext.request.contextPath }/board?page=${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
-						<!-- <li><a href="">▶</a></li> -->
+						<li><a href="">▶</a></li>
 					</ul>
 				</div>					
 				<!-- pager 추가 -->
 				
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board/write" id="new-book">글쓰기</a>
+					<a href="${pageContext.request.contextPath }/board?a=writeform" id="new-book">글쓰기</a>
 				</div>				
 			</div>
 		</div>

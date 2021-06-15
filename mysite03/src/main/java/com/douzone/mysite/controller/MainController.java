@@ -20,6 +20,7 @@ public class MainController {
 	public String main(Model model) {
 		SiteVo siteVo = adminService.getSite();
 		model.addAttribute("site", siteVo);
+		
 		return "main/index";
 	}
 	
