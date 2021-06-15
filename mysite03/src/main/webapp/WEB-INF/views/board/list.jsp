@@ -14,7 +14,7 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="${pageContext.request.contextPath }/board?" method="get">
+				<form id="search_form" action="${pageContext.request.contextPath }/board?" method="post">
 					<input type="hidden" name="a" value="search" />
 					<input type="text" id="kwd" name="kwd" value="">
 					<input type="submit" value="찾기">
@@ -36,14 +36,14 @@
 							<c:if test="${vo.depth != 0 }"> 
 								<img src='${pageContext.servletContext.contextPath }/assets/images/reply.png'/>
 							</c:if>
-							<a href="${pageContext.request.contextPath }/board?a=view&id=${vo.id}">${vo.title }</a>
+							<a href="${pageContext.request.contextPath }/board/${vo.id}?page=${currentPage}&kwd=${kwd}">${vo.title }</a>
 						</td>
 						<td>${vo.userName }</td>
 						<td>${vo.hit }</td>
 						<td>${vo.regDate }</td>
 						<td>
 							<c:if test="${vo.userId == authUser.id }">
-								<a href="${pageContext.request.contextPath }/board?a=delete&id=${vo.id}" class="del">삭제</a>
+								<a href="${pageContext.request.contextPath }/board/${vo.id}?page=${currentPage}&kwd=${kwd}" class="del">삭제</a>
 							</c:if>
 						</td>
 					</tr>
@@ -54,13 +54,13 @@
 				<div class="pager">
 					<ul>
 						<li><a href="">◀</a></li>
-						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" step="1" varStatus="status">
+						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" var="page" >
 							<c:choose>
-								<c:when test="${(status.count-1) + pages.firstPage == pages.currentPage }">
-									<li class="selected"><a href="${pageContext.request.contextPath }/board?page=${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
+								<c:when test="page == ${pages.currentPage}">
+									<li class="selected"><a href="${pageContext.request.contextPath }/board?page=${page}&kwd=${kwd}">${page}</a></li>
 								</c:when>
 								<c:otherwise>
-									<li><a href="${pageContext.request.contextPath }/board?page=${(status.count-1) + pages.firstPage }">${(status.count-1) + pages.firstPage }</a></li>
+									<li><a href="${pageContext.request.contextPath }/board?page=${page}&kwd=${kwd}">${page}</a></li>
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
