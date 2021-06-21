@@ -14,9 +14,8 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="${pageContext.request.contextPath }/board?" method="post">
-					<input type="hidden" name="a" value="search" />
-					<input type="text" id="kwd" name="kwd" value="">
+				<form id="search_form" action="${pageContext.request.contextPath }/board?" method="get">
+					<input type="text" id="kwd" name="kwd" value="${kwd }">
 					<input type="submit" value="찾기">
 				</form>
 				<table class="tbl-ex">
@@ -53,7 +52,7 @@
 				<!-- pager 추가 -->
 				<div class="pager">
 					<ul>
-						<li><a href="">◀</a></li>
+						<li><a href="${pageContext.request.contextPath }/board?page=${pages.prevPage}&kwd=${kwd}">◀</a></li>
 						<c:forEach begin="${pages.firstPage }" end="${pages.lastPage }" var="page" >
 							<c:choose>
 								<c:when test="page == ${pages.currentPage}">
@@ -64,13 +63,13 @@
 								</c:otherwise>
 							</c:choose>
 						</c:forEach>
-						<li><a href="">▶</a></li>
+						<li><a href="${pageContext.request.contextPath }/board?page=${pages.nextPage}&kwd=${kwd}">▶</a></li>
 					</ul>
 				</div>					
 				<!-- pager 추가 -->
 				
 				<div class="bottom">
-					<a href="${pageContext.request.contextPath }/board?a=writeform" id="new-book">글쓰기</a>
+					<a href="${pageContext.request.contextPath }/board/write?page=${pages.currentPage}&kwd=${kwd}" id="new-book">글쓰기</a>
 				</div>				
 			</div>
 		</div>

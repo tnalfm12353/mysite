@@ -18,7 +18,7 @@ import com.douzone.mysite.vo.BoardVo;
 import com.douzone.mysite.vo.UserVo;
 
 public class MyBoardController {
-
+/*
 	@Autowired
 	private BoardService boardService;
 	
@@ -142,4 +142,5 @@ public class MyBoardController {
 			throw new EmptyAuthUserException();
 		}
 	}
+*/
 }

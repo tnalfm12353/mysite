@@ -22,7 +22,7 @@
 	
 	<select id="findAll" parameterType="map" resultType="boardvo">
 		<choose>
-			<when test='kwd == ""'>
+			<when test='  kwd == null || kwd == ""'>
 				<![CDATA[
 					select b.id, b.title, date_format(b.reg_date,'%Y-%m-%d %H:%i:%s')as regDate, b.hit, b.group_id as groupId, b.order_id as orderId, b.depth, b.user_id as userId, u.name as userName
 						from board b, user u
@@ -98,11 +98,11 @@
 		]]>
 	</update>
 	
-	<delete id="delete" parameterType="boardvo">
+	<delete id="delete" parameterType="map">
 		<![CDATA[
 			delete 
 				from board
-				where id = #{id}
+				where id = #{boardId}
 				and user_id = #{userId}
 		]]>
 	</delete>

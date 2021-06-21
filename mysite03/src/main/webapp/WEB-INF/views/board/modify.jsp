@@ -18,6 +18,8 @@
 			<div id="board">
 				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board/modify/${board.id}">
 					<input type="hidden" name="userId" value="${board.userId }"/>
+					<input type="hidden" name="page" value="${param.page }" />
+					<input type="hidden" name="kwd" value="${param.kwd }" />
 					<table class="tbl-ex">
 						<tr>
 							<th colspan="2">글수정</th>

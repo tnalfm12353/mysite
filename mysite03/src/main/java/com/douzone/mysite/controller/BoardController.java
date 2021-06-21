@@ -3,14 +3,19 @@ package com.douzone.mysite.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.douzone.mysite.dto.BoardDTO;
 import com.douzone.mysite.exception.EmptyAuthUserException;
 import com.douzone.mysite.security.Auth;
 import com.douzone.mysite.security.AuthUser;
@@ -26,13 +31,12 @@ public class BoardController {
 	private BoardService boardService;
 	
 	@RequestMapping("")
-	public String boardList(@RequestParam(name = "page", required = false )Integer currentPage, 
-							@RequestParam(required = false)String kwd ,Model model) {
-		Map<String,Integer> pages = boardService.getPages(currentPage, kwd);
-		List<BoardVo> list = boardService.getBoardList(currentPage, kwd);
+	public String boardList(BoardDTO dto ,Model model) {
+		Map<String,Integer> pages = boardService.getPages(dto.getPage(), dto.getKwd());
+		List<BoardVo> list = boardService.getBoardList(dto.getPage(), dto.getKwd());
 		model.addAttribute("list", list);
 		model.addAttribute("pages",pages);
-		return "board/list";
+		return "board/list?page=" + dto.getPage() + "&kwd=" + dto.getKwd();
 	}
 	
 	@RequestMapping("/view/{id}")
@@ -45,31 +49,30 @@ public class BoardController {
 	
 	@Auth
 	@RequestMapping("/write")
-	public String write() {
+	public String write(@ModelAttribute BoardVo boardVo) {
 		return "board/write";
 	}
 	
 	@Auth
 	@PostMapping("/write")
-	public String write(@AuthUser UserVo authUser , BoardVo boardVo, Model model) {
+	public String write(@AuthUser UserVo authUser , @ModelAttribute @Valid BoardVo boardVo, BindingResult result, Model model,
+						@RequestParam(name = "page", defaultValue = "1")Integer currentPage, 
+						@RequestParam(defaultValue = "")String kwd) {
 		checkingEmptyAuthUser(authUser);
-		if("".equals(boardVo.getTitle())|| "".equals(boardVo.getContent())) {
-			String status = "Please Fill Out the Form above";
-			model.addAttribute("status",status);
+		
+		if(result.hasErrors()) {
+			model.addAttribute(result.getModel());
 			return "board/write";
 		}
-		boardVo.setUserId(authUser.getId());
-		boardVo.setGroupId(boardService.getMaxGroupId()+1);
-		boardVo.setOrderId(0);
-		boardVo.setDepth(0);
-		boardService.writeBoard(boardVo);
-		return "redirect:/board";
+		boardService.writeBoard(authUser,boardVo);
+		return "redirect:/board?page=" + currentPage + "&kwd=" + kwd;
 	}
 	
 	@Auth
 	@RequestMapping("/reply/{id}")
 	public String reply(@PathVariable Long id, Model model) {
 		getBoard(id, model);
+		
 		return "board/reply";
 	}
 	
@@ -78,12 +81,7 @@ public class BoardController {
 	public String reply(@AuthUser UserVo authUser, BoardVo boardVo) {
 		checkingEmptyAuthUser(authUser);
 		
-		boardVo.setOrderId(boardVo.getOrderId()+1);
-		boardVo.setDepth(boardVo.getDepth()+1);
-		boardVo.setUserId(authUser.getId());
-		
-		boardService.updateOrder(boardVo);
-		boardService.writeBoard(boardVo);
+		boardService.writeBoard(authUser,boardVo);
 		return "redirect:/board";
 	}
 	
@@ -91,6 +89,7 @@ public class BoardController {
 	@RequestMapping("/modify/{id}")
 	public String modify(@PathVariable Long id, Model model) {
 		getBoard(id, model);
+		
 		return "board/modify";
 	}
 	
@@ -98,6 +97,7 @@ public class BoardController {
 	@PostMapping("/modify/{id}")
 	public String modify(@AuthUser UserVo authUser,@PathVariable Long id, BoardVo boardVo) {
 		checkingEmptyAuthUser(authUser);
+		
 		boardService.updateBoard(authUser, boardVo);
 		return "redirect:/board";
 	}

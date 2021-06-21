@@ -12,12 +12,12 @@ import com.douzone.mysite.vo.BoardVo;
 import com.douzone.mysite.vo.UserVo;
 
 public class MyBoardService {
-
+/*
 	@Autowired
 	private BoardRepository boardRepository;
 	
 	public Map<String, Integer> getPages(int currentPage) {
-		int totalPage = boardRepository.totalPage();
+		int totalPage = boardRepository.totalPage(null);
 		return calculatePages(currentPage, totalPage);
 	}
   
@@ -103,4 +103,5 @@ public class MyBoardService {
 		
 		return pages;
 	}
+*/
 }

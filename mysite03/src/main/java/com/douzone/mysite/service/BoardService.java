@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.douzone.mysite.repository.BoardRepository;
 import com.douzone.mysite.vo.BoardVo;
@@ -17,25 +18,31 @@ public class BoardService {
 	@Autowired
 	private BoardRepository boardRepository;
 	
-	public Map<String, Integer> getPages(int currentPage) {
-		int totalPage = boardRepository.totalPage();
-		return calculatePages(currentPage, totalPage);
-	}
-  
-	public Map<String, Integer> getSearchedPages(int currentPage,String kwd) {
-		int totalPage = boardRepository.searchedTotalPage(kwd);
+	public Map<String, Integer> getPages(int currentPage, String kwd) {
+		int totalPage = boardRepository.totalPage(kwd);
 		return calculatePages(currentPage, totalPage);
 	}
 	
-	public List<BoardVo> getBoardList(int currentPage) {
-		return boardRepository.findAll(currentPage);
+	public List<BoardVo> getBoardList(Integer currentPage, String kwd) {
+		if(currentPage == null){
+			currentPage = 1;
+		}
+		return boardRepository.findAll(currentPage,kwd);
 	}
 	
-	public List<BoardVo> getSearchedBoardList(int currentPage,String kwd) {
-		return boardRepository.searchedfindAll(currentPage, kwd);
-	}
-
-	public void writeBoard(BoardVo boardVo) {
+	@Transactional
+	public void writeBoard(UserVo authUser, BoardVo boardVo) {
+		if(boardVo.getGroupId() == 0) {
+			boardVo.setUserId(authUser.getId());
+			boardVo.setGroupId(getMaxGroupId()+1);
+			boardVo.setOrderId(0);
+			boardVo.setDepth(0);
+		} else {
+			updateOrder(boardVo);
+			boardVo.setOrderId(boardVo.getOrderId()+1);
+			boardVo.setDepth(boardVo.getDepth()+1);
+			boardVo.setUserId(authUser.getId());
+		}
 		boardRepository.insert(boardVo);
 	}
 
@@ -45,26 +52,29 @@ public class BoardService {
 	
 	public void updateBoard(UserVo authUser, BoardVo boardVo) {
 		if(checkingAuthor(authUser, boardVo)) {
+			boardVo.setUserId(authUser.getId());
 			boardRepository.updateBoard(boardVo);
 		}
 	}
 	
-	public void deleteBoard(UserVo authUser, BoardVo boardVo) {
-		if(checkingAuthor(authUser,boardVo)) {
-			boardRepository.delete(boardVo);
-		}
+	public void deleteBoard(Long userId, Long boardId) {
+			boardRepository.delete(userId,boardId);
 	}
 
 	public void updateHit(BoardVo boardVo) {
 		boardRepository.updateHit(boardVo);
 	}
 	
-	public void updateOrder(BoardVo boardVo) {
+	private void updateOrder(BoardVo boardVo) {
 		boardRepository.updateOrder(boardVo);
 	}
 	
-	public int getMaxGroupId() {
-		return boardRepository.maxGroupId();
+	private int getMaxGroupId() {
+		Integer maxGroupId = boardRepository.maxGroupId();
+		if(maxGroupId == null) {
+			maxGroupId = 1;
+		}
+		return maxGroupId;
 	}
 	
 	private boolean checkingAuthor (UserVo authUser, BoardVo boardVo) {
@@ -72,37 +82,20 @@ public class BoardService {
 	}
 	
 	private Map<String, Integer> calculatePages(int currentPage, int totalPage){
-		Map<String, Integer> pages = new HashMap<>();
-
+		Map<String, Integer> pages = new HashMap<>();		
+		
 		totalPage = 13;
-		int blockPage = totalPage > 5 ? totalPage-4 : 1;
-		int firstPage = blockPage > 1 ? currentPage -2 : 1 ;
-		int lastPage =  currentPage >= blockPage ? totalPage : currentPage + 2;
-//		firstPage = currentPage > 3 ? totalPage - currentPage <= 2 ? totalPage >= 5? totalPage - 4: 1 : currentPage - 2 : 1;
-//		lastPage = totalPage >=5? currentPage + 2 >= totalPage ? totalPage : currentPage > 3 ? currentPage + 2 : 5: totalPage;
-		//TODO: 다시 생각해서 이쁘게 만들길..
-//		if(currentPage > 3) {
-//			firstPage = currentPage - 2;
-//			if(totalPage - currentPage <= 2) {
-//				if( totalPage >= 5) {
-//					firstPage = totalPage - 4;
-//				}else {
-//					firstPage = 1;
-//				}
-//			}
-//		}
-//		
-//		if(currentPage +2 >= totalPage) {
-//			lastPage = totalPage;
-//		} else {
-//			if(currentPage > 3 ) {
-//				lastPage = currentPage + 2;
-//			}
-//		}
+		
+		int firstPage = currentPage > 3 ? totalPage - currentPage <= 2 ? totalPage >= 5? totalPage - 4: 1 : currentPage - 2 : 1;
+		int lastPage = totalPage >=5? currentPage + 2 >= totalPage ? totalPage : currentPage > 3 ? currentPage + 2 : 5: totalPage;
+		int prevPage = firstPage > 3 ? currentPage-2 : 1;
+		int nextPage = currentPage >= lastPage ? lastPage : currentPage+2;
 		
 		pages.put("firstPage", firstPage);
 		pages.put("lastPage", lastPage);
 		pages.put("currentPage", currentPage);
+		pages.put("prevPage", prevPage);
+		pages.put("nextPage", nextPage);
 		
 		return pages;
 	}
