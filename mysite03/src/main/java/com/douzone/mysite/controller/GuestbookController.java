@@ -20,7 +20,6 @@ public class GuestbookController {
 	@Autowired
 	private GuestBookService guestBookService;
 	
-	@Auth
 	@RequestMapping("")
 	public String index(Model model) {
 		List<GuestbookVo> list = guestBookService.getMessageList();
@@ -45,5 +44,10 @@ public class GuestbookController {
 		vo.setId(id);
 		guestBookService.deleteMessage(vo);
 		return "redirect:/guestbook";
+	}
+	
+	@RequestMapping("/spa")
+	public String spaLanding() {
+		return "guestbook/spa-landing";
 	}
 }

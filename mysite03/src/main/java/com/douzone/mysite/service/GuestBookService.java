@@ -18,10 +18,20 @@ public class GuestBookService {
 		return guestbookRepository.findAll();
 	}
 	
-	public void deleteMessage(GuestbookVo vo) {
-		guestbookRepository.delete(vo);
+	public List<GuestbookVo> getMessageList(Long id) {
+		return guestbookRepository.findAll(id);
 	}
 	
+	public Boolean deleteMessage(GuestbookVo vo) {
+		return guestbookRepository.delete(vo);
+	}
+	
+	public Boolean deleteMessage(Long id, String password) {
+		GuestbookVo vo = new GuestbookVo();
+		vo.setId(id);
+		vo.setPassword(password);
+		return guestbookRepository.delete(vo);
+	}
 	public void addMessage(GuestbookVo vo) {
 		guestbookRepository.insert(vo);
 	}

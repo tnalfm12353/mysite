@@ -12,7 +12,29 @@
 		]]>
 	</select>
 	
-	<insert id="insert" parameterType="guestbookvo">
+	<select id="findAllById" parameterType="long" resultType="com.douzone.mysite.vo.GuestbookVo">
+		<choose>
+			<when test="_parameter == 0">
+				<![CDATA[
+					select id, name, password,date_format(reg_date,'%Y-%m-%d %H:%i:%s'), message
+						from guestbook 
+						order by id desc
+						limit 0, 5;
+				]]>
+			</when>
+			<otherwise>
+				<![CDATA[
+					select id, name, password,date_format(reg_date,'%Y-%m-%d %H:%i:%s'), message
+						from guestbook
+						where id < ${_parameter} 
+						order by id desc
+						limit 0, 5;
+				]]>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert" parameterType="guestbookvo" keyProperty="id">
 		<![CDATA[
 			insert 
 				into guestbook 

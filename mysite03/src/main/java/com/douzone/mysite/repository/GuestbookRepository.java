@@ -24,13 +24,16 @@ public class GuestbookRepository {
 	private DataSource dataSource;
 	
 	
-	public Boolean insert(GuestbookVo vo) {
-		int count = sqlSession.insert("guestbook.insert",vo);
-		return count == 1;
+	public void insert(GuestbookVo vo) {
+		sqlSession.insert("guestbook.insert",vo);
 	}
 
 	public List<GuestbookVo> findAll() {
 		return sqlSession.selectList("guestbook.findAll");
+	}
+	
+	public List<GuestbookVo> findAll(Long id) {
+		return sqlSession.selectList("guestbook.findAllById",id);
 	}
 	
 	public GuestbookVo findById(Long id) {
