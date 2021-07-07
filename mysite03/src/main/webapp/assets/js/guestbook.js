@@ -82,9 +82,14 @@ const validDialog = (title, message) =>{
 				$(this).dialog("close");
 			}
 		},
-		close: function(){
-			$("#dialog-message").attr("title","");
-			$("#dialog-message p").text("");
-		}
 	});
+}
+
+const addGuestbook = (vo) =>{
+	return(	"<li data-no='" + vo.id + "'>" + 
+				"<strong>" + vo.name + "</strong>" +
+				"<p>" + vo.message + "</p>" +
+				"<strong></strong>" + 
+				"<a href='' data-no='" + vo.id + "'>삭제</a>" + 
+			"</li>");
 }

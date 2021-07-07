@@ -43,19 +43,13 @@
 			type: "get",
 			success: function(response) {
 				response.data.forEach((vo)=>{
-				html = 
-					"<li data-no='" + vo.id +"'>"+
-					"<strong>" + vo.name + "</strong>" + 
-					"<p>" + vo.message + "</p>" +
-					"<strong></strong> <a href='' data-no='"+ vo.id +"'>삭제</a></li>"
-					$("#list-guestbook").append(html);
+					$("#list-guestbook").append(addGuestbook(vo));
 				});
 			}
 		});
 	}
 	
 	const add = (vo) =>{
-		console.log(vo);
 		$.ajax({
 			url: "${pageContext.request.contextPath}/guestbook/api/add",
 			async: true,
@@ -65,16 +59,7 @@
 			data: JSON.stringify(vo),
 			success: function(response) {
 				var vo = response.data;
-				
-				html =
-					"<li data-no='" + vo.id + "'>" + 
-						"<strong>" + vo.name + "</strong>" +
-						"<p>" + vo.message + "</p>" +
-						"<strong></strong>" + 
-						"<a href='' data-no='" + vo.id + "'>삭제</a>" + 
-					"</li>";
-					
-				$("#list-guestbook").prepend(html);	
+				$("#list-guestbook").prepend(addGuestbook(vo));	
 			}
 		});
 	}
