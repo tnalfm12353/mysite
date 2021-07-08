@@ -44,6 +44,7 @@
 			success: function(response) {
 				response.data.forEach((vo)=>{
 					$("#list-guestbook").append(addGuestbook(vo));
+					isFetching = false;
 				});
 			}
 		});

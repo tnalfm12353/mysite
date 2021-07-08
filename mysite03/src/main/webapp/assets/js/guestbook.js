@@ -69,6 +69,23 @@ $(() => {
 				$(".validateTips.error").hide();
 			}
 	});
+	
+	$(window).scroll(() =>{
+		const $window = $(this);
+		
+		let windowHeight = $window.height(); // 브라우저 높이
+		let scrollTop = $window.scrollTop(); // 스크롤 위치
+		let documentHeight = $(document).height(); // body 높이
+		
+		if(scrollTop + windowHeight + 10 > documentHeight) {
+			if(!isFetching){
+				isFetching = true;
+				let id = $("#list-guestbook li:last").data("no");
+				fetch(id);
+			}
+					
+		}
+	});
 });
 
 const validDialog = (title, message) =>{
@@ -93,3 +110,5 @@ const addGuestbook = (vo) =>{
 				"<a href='' data-no='" + vo.id + "'>삭제</a>" + 
 			"</li>");
 }
+
+var isFetching = false;
